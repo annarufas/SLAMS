@@ -1,0 +1,88 @@
+#################################################
+# Fortran build artifacts
+#################################################
+
+code/fortran/build/*
+!code/fortran/build/.gitkeep
+
+#################################################
+# Data directories
+#################################################
+
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+data/interim/*
+!data/interim/.gitkeep
+
+#################################################
+# External model resources
+#################################################
+
+modelresources/external/*
+!modelresources/external/.gitkeep
+
+#################################################
+# Tests (preserve only selected structures)
+#################################################
+
+tests/*
+!tests/GLOBALSTD/
+!tests/LOCALTS6/
+tests/GLOBALSTD/*
+tests/LOCALTS6/*
+!tests/GLOBALSTD/.gitkeep
+!tests/LOCALTS6/.gitkeep
+
+#################################################
+# Config (keep only selected files)
+#################################################
+
+config/*
+!config/config_latitudes_LOCALTS6.txt
+!config/config_longitudes_LOCALTS6.txt
+!config/parameter_sensitivity*
+!config/namelist_template.txt
+!config/namelist_LOCALTS6.txt
+
+#################################################
+# MATLAB artifacts
+#################################################
+
+*.asv
+*.autosave
+*.fig~
+
+#################################################
+# Old / archived code
+#################################################
+
+code/old_matlab/
+code/matlab/unused/
+code/fortran/src_2023/
+code/fortran/src_2024/
+code/fortran/src_2025/
+
+#################################################
+# Hidden / unused folders
+#################################################
+
+notinuse/
+doc/
+figures/
+
+#################################################
+# OS junk
+#################################################
+
+.DS_Store
+
+#################################################
+# Microsoft Office temporary files
+#################################################
+
+~$*.docx
+~$*.doc
