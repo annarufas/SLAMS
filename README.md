@@ -213,4 +213,6 @@ SLAMS-2.0 originated as part of my PhD research at the University of Oxford (201
 
 The original model concept was developed by [Dr. Tinna Jokulsdottir and Prof. David Archer](https://doi.org/10.5194/gmd-9-1455-2016), whose work laid the foundation for SLAMS-2.0.
 
-If SLAMS-2.0 contributes to your research and you are interested in collaboration or supporting ongoing development, please feel free to contact: anna.rufas@gmail.com.
+If SLAMS-2.0 contributes to your research and you are interested in collaboration or supporting ongoing development, please feel free to contact me: anna.rufas@gmail.com.
+
+**IMPORTANT**: Please do NOT post the SLAMS-2.0 code or any files downloaded from this repository on your own GitHub or other website. See LICENSE for licensing information.
