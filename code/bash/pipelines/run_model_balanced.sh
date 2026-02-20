@@ -150,6 +150,7 @@ submit_jobs_to_slurm_efficiently ()
     local time=$3       # time allocation for SLURM
     local partition=$4  # SLURM partition (short, long)
     local batch_file=$5 # path to the file containing job IDs to submit
+    local batch_id=$6
 
 	# Read job IDs into an array
     mapfile -t jobArray < "$batch_file"
@@ -165,7 +166,7 @@ submit_jobs_to_slurm_efficiently ()
         lastArray="${#jobBatch[@]}"
 
         # Save job mapping to a file (for lookup inside jobs)
-        mappingFile="job_mapping_${runIdOffset}_${job_type}.txt"
+        mappingFile="job_mapping_${job_type}_${batch_id}_${runIdOffset}.txt"
 		mappingPath="$RUNS_DIR/$mappingFile"
 		rm -f "$mappingPath"
 		: > "$mappingPath"
@@ -201,15 +202,19 @@ manage_runs ()
 	if [[ "$CHOICE_RUN_IN_SLURM" == "true" ]]; then
 
 		# Short Jobs (≤5h)
+		batch_counter=0
         for file in "$RUNS_DIR"/shortJobs_*.txt; do
             [[ -s "$file" ]] || continue  # skip if no files match
-            submit_jobs_to_slurm_efficiently "short" "500MB" "03:00:00" "short" "$file"
+            submit_jobs_to_slurm_efficiently "short" "500MB" "03:00:00" "short" "$file" "$batch_counter"
+            batch_counter=$((batch_counter+1))
         done
 
         # Long Jobs (>5h)
+        batch_counter=0
         for file in "$RUNS_DIR"/longJobs_*.txt; do
             [[ -s "$file" ]] || continue  # skip if no files match
-            submit_jobs_to_slurm_efficiently "long" "1000MB" "06:00:00" "long" "$file"
+            submit_jobs_to_slurm_efficiently "long" "1000MB" "06:00:00" "long" "$file" "$batch_counter"
+            batch_counter=$((batch_counter+1))
         done
         
 		log "All SLURM job arrays submitted"

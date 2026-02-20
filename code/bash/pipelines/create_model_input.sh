@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #SBATCH --job-name=input 
-#SBATCH --time=10:00:00                   
+#SBATCH --time=06:00:00                   
 #SBATCH --partition=short
 #SBATCH --qos=earth
 #SBATCH --mem=100GB
@@ -263,7 +263,7 @@ handle_forcing_strategy ()
 }
 
 # --------------------------------------------------
-# Import pre-generated forcing data
+# Import pre-generated forcing data (optional)
 # --------------------------------------------------
 # Copies previously generated forcing files into the current experiment directory to 
 # avoid rerunning the expensive MATLAB preprocessing step.
@@ -353,8 +353,8 @@ transfer_code_and_input_files ()
 		# Soft link to input data files
 		ln -s "$INPUTDATA_DIR/run_$i"/* "$currdir" 
 		
-		# Hard link to model files
-		cp -rp "$MODEL_DIR"/* "$currdir" # hard link
+		# Hard link to model files (executable)
+		cp "$MODEL_DIR/SLAMSexecutable" "$currdir/"
 		
 		# Write processed namelist directly
   		printf "%s\n" "$NAMELIST_TEMP" > "$currdir/namelist.input"

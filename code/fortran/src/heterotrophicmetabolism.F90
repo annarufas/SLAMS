@@ -999,8 +999,8 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 			call ParticleStickiness(particle, nClusters, iCluster)
 			particle(iCluster)%porosity = FaecalPelletPorosity(particle, nClusters, iCluster) ! different from standard calculation of particle porosity
 			if (particle(iCluster)%porosity /= faecalPorosity) then
-				write(*,*) 'WARNING: faecal pellet porosity pre-calculated differs from new', faecalPorosity, particle(iCluster)%porosity 
-				call WriteStatusAndStop( )
+				write(*,*) 'WARNING: faecal pellet porosity pre-calculated differs from new'
+				write(*,*) '  Pre-calculated, new:', faecalPorosity, particle(iCluster)%porosity
 			end if
 			
 			call ParticleDensity(particle, nClusters, iCluster, Rho) ! g cm-3

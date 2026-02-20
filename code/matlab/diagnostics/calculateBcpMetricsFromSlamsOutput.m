@@ -1,32 +1,32 @@
-function calculateBcpMetricsFromSlamsOutput(fullpathModelRunsDir,...
-    fullpathModelInputDataDir, fullpathProcessedDataDir, filenameOutputSlams,...
-    filenameSlamsRunGrid, filenameSlamsNumDepthLayers, filenameInputNpp,...
-    filenameInputMask, filenameInputZeu, filenameOutputSlamsBcpMetrics,...
-    choiceTypeGridDomain)
+% function calculateBcpMetricsFromSlamsOutput(fullpathModelRunsDir,...
+%     fullpathModelInputDataDir, fullpathProcessedDataDir, filenameOutputSlams,...
+%     filenameSlamsRunGrid, filenameSlamsNumDepthLayers, filenameInputNpp,...
+%     filenameInputMask, filenameInputZeu, filenameOutputSlamsBcpMetrics,...
+%     choiceTypeGridDomain)
 
 % % CALCULATEBCPMETRICSFROMSLAMSOUTPUT Calculates BCP metrics (Teff, PEeff, 
 % % b, z* and xi) for SLAMS output.                                           
 % 
 % % Folder paths:
-%   fullpathModelRunsDir      = './tests/LOCALTS6/modelruns/';
-%   fullpathModelInputDataDir = './tests/LOCALTS6/modelinputdata/';
-%   fullpathProcessedDataDir  = './data/processed/';
+  fullpathModelRunsDir      = './tests/LOCALTS6/modelruns/';
+  fullpathModelInputDataDir = './tests/LOCALTS6/modelinputdata/';
+  fullpathProcessedDataDir  = './data/processed/';
 % 
 % % Filenames:
-%   filenameOutputSlams           = 'runsoutput.mat';
-%   filenameSlamsRunGrid          = 'grid_run.mat';
-%   filenameSlamsNumDepthLayers   = 'waterColNumDepthLayers.txt';
-%   filenameInputNpp              = 'npp_bicep.mat';
-%   filenameInputMask             = 'mask_custom_icefrac_cmems_chla_occci.mat';
-%   filenameInputZeu              = 'zeu_calculated_chlaoccci_mldifremer_pointonepercentpar0.mat';
-%   filenameOutputSlamsBcpMetrics = 'bcpmetrics.mat';
-%   choiceTypeGridDomain          = 2; % 1=global, 2=local
-% 
-% addpath(genpath(fullfile('.','modelresources','internal'))) 
-% addpath(genpath(fullfile('.','modelresources','external'))) 
-% addpath(genpath(fullfile('.','code','matlab')))
-% addpath(genpath(fullfile('.','data','raw'))) 
-% addpath(genpath(fullfile('.','data','processed'))) 
+  filenameOutputSlams           = 'runsoutput.mat';
+  filenameSlamsRunGrid          = 'grid_run.mat';
+  filenameSlamsNumDepthLayers   = 'waterColNumDepthLayers.txt';
+  filenameInputNpp              = 'npp_bicep.mat';
+  filenameInputMask             = 'mask_custom_icefrac_cmems_chla_occci.mat';
+  filenameInputZeu              = 'zeu_calculated_chlaoccci_mldifremer_pointonepercentpar0.mat';
+  filenameOutputSlamsBcpMetrics = 'bcpmetrics.mat';
+  choiceTypeGridDomain          = 2; % 1=global, 2=local
+
+addpath(genpath(fullfile('.','modelresources','internal'))) 
+addpath(genpath(fullfile('.','modelresources','external'))) 
+addpath(genpath(fullfile('.','code','matlab')))
+addpath(genpath(fullfile('.','data','raw'))) 
+addpath(genpath(fullfile('.','data','processed'))) 
 
 % =========================================================================
 %%
@@ -339,4 +339,4 @@ function [qZeuMonthly,qZeuAnnual,qNppMonthly] = extractOutputSupportingData(...
 
 end % extractOutputSupportingData
 
-end % calculateBcpMetricsFromSlamsOutput
+% end % calculateBcpMetricsFromSlamsOutput
