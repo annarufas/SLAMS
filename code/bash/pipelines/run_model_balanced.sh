@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-
 #SBATCH --job-name=runslams 
 #SBATCH --time=00:10:00                   
-#SBATCH --partition=devel
+#SBATCH --partition=short
 #SBATCH --output=../../../logs/log_runslams_%A.log
 
 set -euo pipefail # abort the script if errors with commands, variables and pipelines occur
 IFS=$'\n\t'       # controls bash word splitting
 
 # ====================================================================================== 
-# SLAMS 2.0 – Model Execution Driver (Balanced Runs)
+# SLAMS – Model Execution Driver (Balanced Runs)
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas
+# Created: 16 Feb 2026    
+# Last updated: 14 Sep 2026 
 #  
 # PURPOSE
 # -------
@@ -38,7 +39,7 @@ IFS=$'\n\t'       # controls bash word splitting
 # 
 # NOTES
 # -----
-#   - Partition names, memory, and time limits are defined in manage_runs()
+#   Partition names, memory, and time limits are defined in manage_runs()
 #                                                                                 
 # ====================================================================================== 
 
@@ -181,7 +182,7 @@ submit_jobs_to_slurm_efficiently ()
                --array=1-"$lastArray" \
                --mem-per-cpu="$mem" \
                --partition="$partition" \
-               --qos=earth \
+               --qos=standard \
                --job-name=runscript \
                --output="$LOGS_DIR/log_runscript_%A_%a.log" \
                "$PIPELINE_DIR/runscript_balanced.sh"
@@ -205,7 +206,7 @@ manage_runs ()
 		batch_counter=0
         for file in "$RUNS_DIR"/shortJobs_*.txt; do
             [[ -s "$file" ]] || continue  # skip if no files match
-            submit_jobs_to_slurm_efficiently "short" "500MB" "03:00:00" "short" "$file" "$batch_counter"
+            submit_jobs_to_slurm_efficiently "short" "500MB" "01:00:00" "short" "$file" "$batch_counter"
             batch_counter=$((batch_counter+1))
         done
 

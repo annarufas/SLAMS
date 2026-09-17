@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-message: "If you use SLAMS-2.0 in your research, please cite the associated publication."
+message: "If you use SLAMS in your research, please cite this software and the associated publication."
 
-title: "SLAMS-2.0"
+title: "SLAMS"
 type: software
 version: 2.0.0
-date-released: 2026-02-18
-license: MIT
-repository-code: "https://github.com/annarufas/SLAMS-2.0"
-url: "https://github.com/annarufas/SLAMS-2.0"
+date-released: 2026-09-16
+
+license-url: "https://github.com/annarufas/SLAMS/blob/main/LICENSE"
+repository-code: "https://github.com/annarufas/SLAMS"
 
 authors:
   - family-names: Rufas
@@ -20,6 +20,12 @@ preferred-citation:
     - family-names: Rufas
       given-names: Anna
       orcid: "https://orcid.org/0000-0003-3800-8879"
-  title: "SLAMS-2.0: A stochastic Lagrangian aggregate model of sinking particles for the ocean’s biological carbon pump"
-  journal: "Journal of Advances in Modeling Earth Systems"
+    - family-names: Khatiwala
+      given-names: Samar
+      orcid: "https://orcid.org/0000-0001-9048-3234"
+    - family-names: Jokulsdottir
+      given-names: Tinna
+  title: "SLAMS-2.0: a stochastic, Lagrangian particle-resolving modelling framework for investigating the biological carbon pump"
   year: 2026
+  notes: "Preprint available from the ESS Open Archive."
+  url: "https://doi.org/10.22541/essoar.177316670.08373510/v2"

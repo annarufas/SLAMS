@@ -2144,7 +2144,7 @@ for iAtt = 1:nAttr
         end
 
         if iAtt == 1 % POC
-            ylim([1e-14 1e-7])
+            ylim([1e-15 1e-7])
             yticks([1e-12 1e-10 1e-8])
         elseif iAtt == 2 % TEP-C
             ylim([1e-18 1e-7])
@@ -2172,7 +2172,7 @@ for iAtt = 1:nAttr
         elseif iAtt == 12 % rho
             ylim([0.8 2.8])
         elseif iAtt == 13 % vsink
-            ylim([1e-3 10])
+            ylim([1e-4 35])
         elseif iAtt == 14 % pnum
             ylim([1e-2 2e8])
         end

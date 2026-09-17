@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 #SBATCH --job-name=sensit 
 #SBATCH --time=00:10:00                   
 #SBATCH --partition=devel
@@ -9,79 +8,84 @@ set -euo pipefail # abort the script if errors with commands, variables and pipe
 IFS=$'\n\t'       # controls bash word splitting
 
 # ======================================================================================
-# Author: A. Rufas | 28 Jan 2026
+# SLAMS – Sensitivity Analysis Job
+#
+# Author: A. Rufas
+# Created: 16 Feb 2026
+# Last updated: 14 Sep 2026
 #
 # PURPOSE
 # -------
-# This script performs a parameter sensitivity analysis by:
-#   1. Modifying a base namelist using values specified in CHANGES_FILE
-#   2. Creating corresponding latitude/longitude configuration files
-#   3. Submitting SLURM jobs for model input creation, model execution, and post-processing
+# 	This script performs a parameter sensitivity analysis by:
+#   	1. Modifying a base namelist using values specified in CHANGES_FILE
+#   	2. Creating corresponding latitude/longitude configuration files
+#   	3. Submitting SLURM jobs for model input creation, model execution, and post-processing
 #      
 # IMPORTANT: EXECUTION MODEL
 # --------------------------
-# This script is NOT intended to be run end-to-end in a single submission. Several steps
-# must be executed sequentially, with downstream jobs submitted only after upstream jobs 
-# have completed successfully.
+# 	This script is NOT intended to be run end-to-end in a single submission. Several steps
+# 	must be executed sequentially, with downstream jobs submitted only after upstream jobs 
+# 	have completed successfully.
 #
-# The execution order is controlled by manually commenting/uncommenting function calls
-# inside the main() function.
+# 	The execution order is controlled by commenting/uncommenting function calls inside the
+# 	main() function.
 #
 # REQUIRED PREPARATION
 # --------------------
-# 1. In slams_workflow_config.sh:
-#    - Ensure CHOICE_RECOMPILE=false so the model is not recompiled for every sensitivity run.
+# 	1. In slams_workflow_config.sh:
+#    	- Ensure CHOICE_RECOMPILE=false so the model is not recompiled for every 
+#	s	ensitivity run.
 #      
-# 2. Verify that CHANGES_FILE exists in config/ and contains:
-#      parameter,value,bound
-#    as a CSV with a header row.
+# 	2. Verify that CHANGES_FILE exists in config/ and contains:
+#      	parameter,value,bound
+#    	as a CSV with a header row.
 #
-# 3. In the template namelist:
-#    - Ensure CHOICE_GRID_DOMAIN=2 so the model is run on a local basis.
+# 	3. In the template namelist:
+#    	- Ensure CHOICE_GRID_DOMAIN=2 so the model is run on a local basis.
 #
 # STEP-BY-STEP WORKFLOW
 # --------------------
-# Step 1: Generate namelists and coordinate files
-#   - Uncomment ONLY the following in main():
-#       create_new_namelist
-#       create_corresponding_coords_file
-#   - Run this script and verify output files.
+# 	Step 1: Generate namelists and coordinate files
+#   	- Uncomment ONLY the following in main():
+#       	create_new_namelist
+#       	create_corresponding_coords_file
+#   	- Run this script and verify output files.
 #
-# Step 2: Create model input (must finish before Step 3)
-#   - Uncomment:
-#       submit_script_create_model_input
-#   - Comment out all other submit_* functions
-#   - Submit the script and wait until ALL jobs finish.
+# 	Step 2: Create model input (must finish before Step 3)
+#   	- Uncomment:
+#       	submit_script_create_model_input
+#   	- Comment out all other submit_* functions
+#   	- Submit the script and wait until ALL jobs finish.
 #
-# Step 3: Run the balanced model
-#   - Uncomment:
-#       submit_script_run_model_balanced
-#   - Submit the script and wait until ALL jobs finish.
+# 	Step 3: Run the balanced model
+#   	- Uncomment:
+#       	submit_script_run_model_balanced
+#   	- Submit the script and wait until ALL jobs finish.
 #
-# Step 4: Check output status
-#   - Uncomment:
-#       submit_check_output_status
+# 	Step 4: Check output status
+#   	- Uncomment:
+#       	submit_check_output_status
 #
-# Step 5: Read and post-process model output
-#   - Uncomment:
-#       submit_read_model_output
+# 	Step 5: Read and post-process model output
+#   	- Uncomment:
+#       	submit_read_model_output
 # 
-# Step 6: Download model output to local machine
-#   - Use the script download_runsoutput.sh locally
+# 	Step 6: Download model output to local machine
+#   	- Use the script download_runsoutput.sh locally
 #
 # SLURM NOTES
 # -----------
-# - No memory directive (#SBATCH --mem) is specified intentionally.
-# - This prevents memory settings from being inherited by downstream jobs.
-# - This script itself performs only lightweight Bash operations.
+# 	- No memory directive (#SBATCH --mem) is specified intentionally.
+# 	- This prevents memory settings from being inherited by downstream jobs.
+# 	- This script itself performs only lightweight Bash operations.
 #
 # USAGE
 # -----
-# On a local machine (for file generation only):
-#   ./run_param_sensitivity_test.sh
+# 	On a local machine (for file generation only):
+#   	./run_param_sensitivity_test.sh
 #
-# On a SLURM system:
-#   sbatch run_param_sensitivity_test.sh
+# 	On a SLURM system:
+#  		sbatch run_param_sensitivity_test.sh
 #
 # ======================================================================================
 

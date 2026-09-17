@@ -1,11 +1,14 @@
 
 % My locations 
-lat = [31.6, 49, 79]; % BATS/OFP, PAP-SO, HAUSGARTEN
-lon = [-64.2, -16.5, 4.3];
+% lat = [31.6, 49, 79]; % BATS/OFP, PAP-SO, HAUSGARTEN
+% lon = [-64.2, -16.5, 4.3];
 % lat = [22.5, 0, 50]; % HOT/ALOHA, EqPac, OSP
 % lon = [-158, -140, -145];
 % lat = [22.5, 0, 50, 31.6, 49, 79];
 % lon = [-158, -140, -145, -64.2, -16.5, 4.3];
+
+lat = [22.5, 50, 31.6, 49];
+lon = [-158, -145, -64.2, -16.5];
 
 figure()
 set(gcf,'Units','Normalized','Position',[0.01 0.05 0.30 0.30])
@@ -32,4 +35,4 @@ m_plot(lon, lat, 'o', ...
 
 % saveFigureInFolder('LOCALTS6','globalViewAtlantic')
 % saveFigureInFolder('LOCALTS6','globalViewPacific')
-saveFigureInFolder('LOCALTS6','globalViewAll')
+saveFigureInFolder('.figures/LOCALTS6/','globalViewSome')

@@ -19,21 +19,22 @@ use modelparameters, only: nDepthLayers, maxNumSmsTerms, maxNumAuxTerms, timeSte
 	maxNumZooDeadClustersPerProfile, nNewZooDeadClustersPerDepthLayer, nMesoZooSizeClasses, &
 	sumZooWetWeightProducts, zooCarbonWeightQuota, zooWetWeightQuota, zooWetWeightQuotaBinWidth, &
 	zooProsomeLength, zooRadius, zooSwimmingSpeed, zoo_distrib_slope, detection_radius_factor_mesozoo, &
-	gut_passage_time_mesozoo, dissol_rate_calc, zoo_absorption_eff_carbon, zoo_net_growth_eff, &
-	mort_rate_mesozoo, agg_to_zoo_size_ratio, frac_OM_zoo_ingestion_surf, frac_OM_zoo_ingestion_deep, &
-	q10_mesozoo, q10_microb, resp_rate_poc_max_0deg_mesozoo, resp_rate_poc_max_0deg_microb, &
-	resp_rate_tepc_max_0deg_microb, resp_rate_poc_max_mesozoo, resp_rate_poc_max_microb, &
-	resp_rate_tepc_max_microb, k_O2_resp, solub_rate_poc, solub_rate_tepc, C_frac_in_OM, &
-	C_frac_in_TEP, operational_size_poc_min, detection_limit_poc, shrinkAfterMicrobialMetabolismScheme, &
-	choiceZooBehaviourKernels, choiceZooIngestionCriteria, choiceIsMineralProtectAgainstMicrobResp, &
-	iCalcite, iOpal, iClay, iZooNumber, iNightDvmUpperBound, iNightDvmLowerBound, &
-	iDayDvmUpperBound, iDayDvmLowerBound, iZooSpecRespRate, iMicrobSpecRespRate, iMicrobSolubOrgC, &
-	iMicrobSolubTepC, iMicrobSolubCaCO3, iMicrobSolubOpal, iMicrobSolubClay, iZooIngestOrgC, &
-	iZooIngestTepC, iZooEgestOrgC, iZooEgestTepC, iZooRespOrgC, iZooRespTepC, iZooExcretOrgC, &
-	iZooExcretTepC, iZooDissolCaCO3, iMicrobRespOrgC, iMicrobRespTepC, iZooDeathOrgC, iZooDeadBiomass, &
-	iPrimProdOrgC, iNumParticlesEvalEncounter, iNumParticlesEncountered, iNumParticlesFragmentedZoo, &
-	iNumParticlesIngestedZoo, iNumParticlesOmittedZoo, carbon_density_threshold_zoo_ingestion, &
-	detection_limit_calc, detection_limit_opal, detection_limit_clay
+	gut_passage_time_mesozoo, dissol_rate_calc, dissol_rate_calc_zoo_gut, zoo_absorption_eff_carbon, &
+	zoo_net_growth_eff, mort_rate_mesozoo, agg_to_zoo_size_ratio, frac_OM_zoo_ingestion_surf, &
+	frac_OM_zoo_ingestion_deep, q10_mesozoo, q10_microb, resp_rate_poc_max_0deg_mesozoo, &
+	resp_rate_poc_max_0deg_microb, resp_rate_tepc_max_0deg_microb, resp_rate_poc_max_mesozoo, &
+	resp_rate_poc_max_microb, resp_rate_tepc_max_microb, k_O2_resp, solub_rate_poc, solub_rate_tepc, &
+	C_frac_in_OM, C_frac_in_TEP, operational_size_poc_min, detection_limit_poc, &
+	shrinkAfterMicrobialMetabolismScheme, choiceZooBehaviourKernels, choiceZooIngestionCriteria, &
+	choiceIsMineralProtectAgainstMicrobResp, iCalcite, iOpal, iClay, iZooNumber, iNightDvmUpperBound, &
+	iNightDvmLowerBound, iDayDvmUpperBound, iDayDvmLowerBound, iZooSpecRespRate, iMicrobSpecRespRate, &
+	iMicrobSolubOrgC, iMicrobSolubTepC, iMicrobSolubCaCO3, iMicrobSolubOpal, iMicrobSolubClay, &
+	iZooIngestOrgC, iZooIngestTepC, iZooEgestOrgC, iZooEgestTepC, iZooRespOrgC, iZooRespTepC, &
+	iZooExcretOrgC, iZooExcretTepC, iZooDissolCaCO3, iMicrobRespOrgC, iMicrobRespTepC, iZooDeathOrgC, &
+	iZooDeadBiomass, iPrimProdOrgC, iNumParticlesEvalEncounter, iNumParticlesEncountered, &
+	iNumParticlesFragmentedZoo, iNumParticlesIngestedZoo, iNumParticlesOmittedZoo, &
+	carbon_density_threshold_zoo_ingestion, detection_limit_calc, detection_limit_opal, &
+	detection_limit_clay
 use sanitychecks, only: IsQuantityEffectivelyZero, CheckParticleSanity, WriteStatusAndStop, &
 	IsExceedingInitialAmount					  
 use montecarlosampling, only: RandProbCase
@@ -399,15 +400,15 @@ subroutine MesozooplanktonInteraction(particle, nClusters, iLastLocus, SMSterm, 
 				case (1) ! ingestion only if organic fraction above threshold
 					orgMatterVolumeFrac = VolumetricFractionOfOrganicMatter(particle, nClusters, iCluster) ! palatability metric related to how much of the particle is eatable by zooplankton versus ballast
 					if (zmidLayer < 1000d0) then ! waters above 1000 m
-						ingestCond = (orgMatterVolumeFrac > frac_OM_zoo_ingestion_surf)
+						ingestCond = orgMatterVolumeFrac > frac_OM_zoo_ingestion_surf
 					else ! very deep waters
-						ingestCond = (orgMatterVolumeFrac > frac_OM_zoo_ingestion_deep)
+						ingestCond = orgMatterVolumeFrac > frac_OM_zoo_ingestion_deep
 					end if
 				case (2) ! ingestion only if carbon density above threshold
 					particleCarbonMass = (particle(iCluster)%molesOrgC + particle(iCluster)%molesTepC)*MOLAR_MASS_CARBON ! g
 					particleBulkVolume = 1d-12*particle(iCluster)%solidVolume / (1d0 - particle(iCluster)%porosity) ! cm3
 					particleCarbonDensity = particleCarbonMass / particleBulkVolume ! g cm-3
-					ingestCond = (particleCarbonDensity > carbon_density_threshold_zoo_ingestion)
+					ingestCond = particleCarbonDensity > carbon_density_threshold_zoo_ingestion
 				end select
 				
 				! Final decision tree for encountered particles
@@ -474,6 +475,10 @@ subroutine MesozooplanktonInteraction(particle, nClusters, iLastLocus, SMSterm, 
 				randZooProsomeLength = zooProsomeLength(iRandZoo)*1d-3 ! um --> mm
 				countZooClassesSelected(iRandZoo) = countZooClassesSelected(iRandZoo) + 1d0
 	
+				! Log ingested mass							
+				SMSterm(iZooIngestOrgC) = SMSterm(iZooIngestOrgC) + particle(iCluster)%molesOrgC*nParticlesPerCluster									
+				SMSterm(iZooIngestTepC) = SMSterm(iZooIngestTepC) + particle(iCluster)%molesTepC*nParticlesPerCluster
+				
 				call MesozooplanktonIngestion(assimilatedCarbon, particle, nClusters, &
 					SMSterm, auxTerm, auxCount, iCluster, O2, TempC, Rho, waterDynVisco, &
 					randZooProsomeLength, iTimeStep, iProfile)
@@ -488,8 +493,8 @@ subroutine MesozooplanktonInteraction(particle, nClusters, iLastLocus, SMSterm, 
 				somaZoo = somaZoo + assimilatedCarbon ! mol C
 					
 				! Log ingested mass							
-				SMSterm(iZooIngestOrgC) = SMSterm(iZooIngestOrgC) + particle(iCluster)%molesOrgC*nParticlesPerCluster									
-				SMSterm(iZooIngestTepC) = SMSterm(iZooIngestTepC) + particle(iCluster)%molesTepC*nParticlesPerCluster
+				!SMSterm(iZooIngestOrgC) = SMSterm(iZooIngestOrgC) + particle(iCluster)%molesOrgC*nParticlesPerCluster									
+				!SMSterm(iZooIngestTepC) = SMSterm(iZooIngestTepC) + particle(iCluster)%molesTepC*nParticlesPerCluster
 				auxTerm(iNumParticlesIngestedZoo) = auxTerm(iNumParticlesIngestedZoo) + nParticlesPerCluster
 				auxCount(iNumParticlesIngestedZoo) = auxCount(iNumParticlesIngestedZoo) + 1
 				
@@ -564,19 +569,20 @@ subroutine MesozooplanktonIngestion(clusterAssimilatedCarbon, particle, nCluster
 	real*8, dimension(maxNumSmsTerms), intent(inout) :: SMSterm
 	real*8, dimension(maxNumAuxTerms), intent(inout) :: auxTerm, auxCount
 	real*8, intent(out) :: clusterAssimilatedCarbon
-	
+
+	integer :: nPrint = 0
 	real*8 :: nParticlesPerCluster, particleOrgC, particleTepC, particleCalc, clusterIngestedCarbon, &
 		clusterAbsorbedCarbon, clusterEgestedCarbon, clusterRespiredCarbon, particleRespiredOrgC,  &
 		particleRespiredTepC, particleRespiredCarbon, particleAbsorbedOrgC, particleAbsorbedTepC, &
-		particleEgestedOrgC, particleEgestedTepC, pressureLimCalc, dissCalc, zooGutCO3ionConc, &
-		zooGutVolume, faecalPelletBulkVol, zooOmegaCalc, particlePotentialExcretOrgC, &
+		particleEgestedOrgC, particleEgestedTepC, faecalPelletBulkVol, particlePotentialExcretOrgC, &
 		particlePotentialExcretTepC, particlePotentialExcretCarbon, particleExcretOrgC, &
-		particleExcretTepC, clusterExcretedCarbon
+		particleExcretTepC, clusterExcretedCarbon, gutDissolRate, gutExitRate, totalGutRate, &
+		fracCalcDissolved, dissCalc, egestCalc
 		
 	nParticlesPerCluster = particle(iCluster)%nPxC
 	particleOrgC = particle(iCluster)%molesOrgC
-	particleTepC = particle(iCluster)%molesTepC  	
-	particleCalc = particle(iCluster)%molesMineral(iCalcite) 
+	particleTepC = particle(iCluster)%molesTepC
+	particleCalc = particle(iCluster)%molesMineral(iCalcite)
 	clusterIngestedCarbon = (particleOrgC+particleTepC)*nParticlesPerCluster
 
 	if (.not. ieee_is_finite(particleOrgC) .or. particleOrgC < 0d0 .or. &
@@ -585,6 +591,8 @@ subroutine MesozooplanktonIngestion(clusterAssimilatedCarbon, particle, nCluster
     	write(*,*) '  OrgC, TepC:', particleOrgC, particleTepC
     	call WriteStatusAndStop()
 	end if
+	
+	nZooIngestionEvents(iProfile) = nZooIngestionEvents(iProfile) + 1
 
 	! ------ Calculate bulk organic matter absorbed and egested ------
 	! The absorbed portion of food ingested is that which is absorbed through the gut wall 
@@ -602,14 +610,10 @@ subroutine MesozooplanktonIngestion(clusterAssimilatedCarbon, particle, nCluster
 	particlePotentialExcretTepC = (1d0 - zoo_net_growth_eff) * particleAbsorbedTepC
 	particlePotentialExcretCarbon = particlePotentialExcretOrgC + particlePotentialExcretTepC	
 
-	! ------ Is respiration possible? ------	
-	! Before any further calculations, let's see whether respiration can happen (i.e., 
-	! organisms can live in the current environment conditions). If there cannot be 
-	! respiration, there won't be metabolic activity of any type.
-
 	particle(iCluster)%molesOrgC = particleAbsorbedOrgC
 	particle(iCluster)%molesTepC = particleAbsorbedTepC
-					
+	
+	! ------ Calculate respired material ------				
 	call MesozooplanktonRespiration(particleRespiredOrgC, particleRespiredTepC, particle, &
 		nClusters, SMSterm, auxTerm, auxCount, iCluster, O2, TempC) ! this function does not update particle attributes		
 
@@ -626,79 +630,99 @@ subroutine MesozooplanktonIngestion(clusterAssimilatedCarbon, particle, nCluster
     	call WriteStatusAndStop()
 	end if
 	
-	! ------ Proceed with digestion ------
-	if (particleRespiredCarbon > 0d0) then
-		nZooIngestionEvents(iProfile) = nZooIngestionEvents(iProfile) + 1
-		
-		! ------ Calculate volume of the faecal pellet ------
-		! From Stamiezskin et al. 2015
-		faecalPelletBulkVol = 10d0**(2.58d0*LOG10(randZooProsomeLength) + 5.4d0) ! um3 (PL in mm)
-		
-		! ------ CaCO3 dissolution in the acidic gut/food vacuole of mesozooplankton ------	
-		! Model from Penry & Jumars (1986) and Jumars & Penry (1989), used in Jansen & Wolf-Gladrow (2001)
-		if (particleCalc > 0d0) then
-		
-			! Calculate gut volume of zooplankton (Table 1 of Jansen & Wolf-Gladrow (2001))
-			zooGutVolume = 5d0*faecalPelletBulkVol*1d-18 ! um3 --> m3, expecting values around 1-8 x 1e-9 L
-			
-			! Calculate calcite dissolution limitation factor
-			if (zooGutVolume <= 0d0) then
-			  	zooOmegaCalc = 0d0
-			else
-			  	zooGutCO3ionConc = particleCalc*1d3 / zooGutVolume ! mmol m-3
-			  	zooOmegaCalc = zooGutCO3ionConc / 42.7d0 ! 42.7 mmol m-3 (=umol kg-1) is a surface ocean value (100 m), as in Jansen's thesis
-			end if
-			pressureLimCalc = CaCO3dissolutionLimFactor(zooOmegaCalc)
-			
-			! Dissolve calcite		
-			dissCalc = particleCalc &
-				- particleCalc*EXP(- ( (dissol_rate_calc*pressureLimCalc/SECONDS_PER_DAY) &
-					+ (1d0/gut_passage_time_mesozoo) ) * timeStep) ! mol
-			particle(iCluster)%molesMineral(iCalcite) = particleCalc - dissCalc
-			SMSterm(iZooDissolCaCO3) = SMSterm(iZooDissolCaCO3) + dissCalc*nParticlesPerCluster
-		end if
+	! ------ Calculate volume of the faecal pellet ------
+	! From Stamiezskin et al. 2015
+	faecalPelletBulkVol = 10d0**(2.58d0*LOG10(randZooProsomeLength) + 5.4d0) ! um3 (PL in mm)
+	
+	! ------ CaCO3 dissolution in the acidic gut/food vacuole of mesozooplankton ------	
+	! Model from Penry & Jumars (1986) and Jumars & Penry (1989), used by 
+	! Jansen & Wolf-Gladrow (2001). Ingested calcite is removed from the gut through
+	! two competing first-order pathways:
+	!
+	!   (1) dissolution to DIC, with rate k_diss = kappa_calc
+	!   (2) evacuation as undissolved CaCO3, with rate k_exit = 1 / tau_gut
+	!
+	! Gut passage occurs on a much shorter timescale than the model time step. Because
+	! gut contents are not tracked between model time steps, the ingested calcite is 
+	! assumed to be fully processed within the current ingestion event. The model time 
+	! step therefore does not enter this calculation. Instead, the ingested calcite is 
+	! partitioned between dissolution and egestion according to the relative rates of 
+	! these two competing first-order pathways.
+	
+	if (particleCalc > 0d0) then
 
-		! ------ Excretory losses (urine) ------	
-		if (clusterIngestedCarbon > 0d0 .and. particleRespiredCarbon < particlePotentialExcretCarbon) then
-			particleExcretOrgC = particlePotentialExcretOrgC - particleRespiredOrgC
-			particleExcretTepC = particlePotentialExcretTepC - particleRespiredTepC
-			clusterExcretedCarbon = (particleExcretOrgC+particleExcretTepC) * nParticlesPerCluster
-			SMSterm(iZooExcretOrgC) = SMSterm(iZooExcretOrgC) + particleExcretOrgC*nParticlesPerCluster
-			SMSterm(iZooExcretTepC) = SMSterm(iZooExcretTepC) + particleExcretTepC*nParticlesPerCluster			
-		else		
-			clusterExcretedCarbon = 0d0				
-		end if
-
-		! ------ Faecal pellet production ------
-		! Use the minerals that are left and the material that has not been absorbed
-		particle(iCluster)%molesOrgC = particleEgestedOrgC
-		particle(iCluster)%molesTepC = particleEgestedTepC
-		if ((particleEgestedOrgC+particleEgestedTepC+SUM(particle(iCluster)%molesMineral(:))) > 0d0) then	
-			call MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, &
-				faecalPelletBulkVol, Rho, waterDynVisco, iTimeStep, iProfile) ! this function updates particle attributes
-		end if
-		
-		SMSterm(iZooEgestOrgC) = SMSterm(iZooEgestOrgC) + particle(iCluster)%molesOrgC*particle(iCluster)%nPxC
-		SMSterm(iZooEgestTepC) = SMSterm(iZooEgestTepC) + particle(iCluster)%molesTepC*particle(iCluster)%nPxC
-							
-		! ------ Assimilate leftover material ------
-		clusterAssimilatedCarbon = clusterAbsorbedCarbon - clusterRespiredCarbon - clusterExcretedCarbon  ! mol C
-		if (.not. ieee_is_finite(clusterAssimilatedCarbon) .or. clusterAssimilatedCarbon < 0d0) then
-    		write(*,*) 'ERROR: invalid clusterAssimilatedCarbon', clusterAssimilatedCarbon
-    		call WriteStatusAndStop()
-		end if
-		if (clusterAssimilatedCarbon > clusterAbsorbedCarbon) then
-			write(*,*) 'ERROR: assimilated carbon exceeds absorbed'
+		gutDissolRate = dissol_rate_calc_zoo_gut / SECONDS_PER_DAY ! s-1
+		gutExitRate = 1d0 / gut_passage_time_mesozoo ! s-1	
+		totalGutRate = gutDissolRate + gutExitRate
+		if (.not. ieee_is_finite(totalGutRate) .or. totalGutRate <= 0d0) then
+			write(*,*) 'ERROR: invalid total gut-processing rate:', totalGutRate
 			call WriteStatusAndStop()
 		end if
+		
+		! Partition ingested calcite between dissolution and faecal egestion	
+		fracCalcDissolved = gutDissolRate / totalGutRate
+		dissCalc  = particleCalc * fracCalcDissolved
+		egestCalc = particleCalc - dissCalc
+		
+		if (.not. ieee_is_finite(dissCalc) .or. .not. ieee_is_finite(egestCalc) .or. &
+			dissCalc < 0d0 .or. egestCalc < 0d0) then
+			write(*,*) 'ERROR: invalid calcite partition'
+			write(*,*) '  ingested, dissolved, egested:', particleCalc, dissCalc, egestCalc
+			call WriteStatusAndStop()
+		end if
+		
+		! Only undissolved calcite is available for incorporation into the faecal pellet
+		particle(iCluster)%molesMineral(iCalcite) = egestCalc
+		
+		if (nPrint < 10) then
+			nPrint = nPrint + 1
+			write(*,*) 'Particle          :', nPrint
+			write(*,*) 'particleOrgC      :', particleOrgC
+			write(*,*) 'particleTepC      :', particleTepC
+			write(*,*) 'radius            :', particle(iCluster)%radius
+			write(*,*) 'particleCalc      :', particleCalc
+			write(*,*) 'dissCalc          :', dissCalc
+			write(*,*) 'egestCalc         :', egestCalc
+			write(*,*)
+		end if
+			
+		! Add calcite dissolved in the gut to the DIC source term
+		SMSterm(iZooDissolCaCO3) = SMSterm(iZooDissolCaCO3) + dissCalc*nParticlesPerCluster
+	end if
 
-	else
+	! ------ Excretory losses (urine) ------	
+	if (clusterIngestedCarbon > 0d0 .and. particleRespiredCarbon < particlePotentialExcretCarbon) then
+		particleExcretOrgC = particlePotentialExcretOrgC - particleRespiredOrgC
+		particleExcretTepC = particlePotentialExcretTepC - particleRespiredTepC
+		clusterExcretedCarbon = (particleExcretOrgC+particleExcretTepC) * nParticlesPerCluster
+		SMSterm(iZooExcretOrgC) = SMSterm(iZooExcretOrgC) + particleExcretOrgC*nParticlesPerCluster
+		SMSterm(iZooExcretTepC) = SMSterm(iZooExcretTepC) + particleExcretTepC*nParticlesPerCluster			
+	else		
+		clusterExcretedCarbon = 0d0				
+	end if
 
-		particle(iCluster)%molesOrgC = particleOrgC
-		particle(iCluster)%molesTepC = particleTepC
-		clusterAssimilatedCarbon = 0d0
-
-	end if ! end checking whether metabolism can be active in current temperature and O2 conditions
+	! ------ Faecal pellet production ------
+	! Use the minerals that are left and the material that has not been absorbed
+	particle(iCluster)%molesOrgC = particleEgestedOrgC
+	particle(iCluster)%molesTepC = particleEgestedTepC
+	if ((particleEgestedOrgC+particleEgestedTepC+SUM(particle(iCluster)%molesMineral(:))) > 0d0) then	
+		call MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, &
+			faecalPelletBulkVol, Rho, waterDynVisco, iTimeStep, iProfile) ! this function updates particle attributes
+	end if
+	
+	SMSterm(iZooEgestOrgC) = SMSterm(iZooEgestOrgC) + particle(iCluster)%molesOrgC*particle(iCluster)%nPxC
+	SMSterm(iZooEgestTepC) = SMSterm(iZooEgestTepC) + particle(iCluster)%molesTepC*particle(iCluster)%nPxC
+						
+	! ------ Assimilate leftover material ------
+	clusterAssimilatedCarbon = clusterAbsorbedCarbon - clusterRespiredCarbon - clusterExcretedCarbon  ! mol C
+	if (.not. ieee_is_finite(clusterAssimilatedCarbon) .or. clusterAssimilatedCarbon < 0d0) then
+		write(*,*) 'ERROR: invalid clusterAssimilatedCarbon', clusterAssimilatedCarbon
+		call WriteStatusAndStop()
+	end if
+	if (clusterAssimilatedCarbon > clusterAbsorbedCarbon) then
+		write(*,*) 'ERROR: assimilated carbon exceeds absorbed'
+		call WriteStatusAndStop()
+	end if
 
 end subroutine MesozooplanktonIngestion
 
@@ -793,9 +817,12 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 		parentSolidVolOrgMatter, parentSolidVolTep, parentSolidVolOpal, parentSolidVolCalc, &
 		parentSolidVolClay, faecalPorosity, faecalSolidVol, faecalToParentSolidVolume, &
 		faecalSolidVolOrgMatter, faecalSolidVolTep, faecalSolidVolOpal, faecalSolidVolCalc, &
-		faecalSolidVolClay, faecalClusterMass, pelletMass, expectedNumPellets, realisedNumPellets, &
+		faecalSolidVolClay, pelletMass, expectedNumPellets, realisedNumPellets, &
 		expectedNumPrimParticles, realisedNumPrimParticles, nPrimParticles, remainder, harvest, &
-		calcFaecalPelletSolidVolFromMass
+		calcFaecalPelletSolidVolFromMass, parentClusterOrgC, parentClusterTepC, parentClusterOpal, &
+    	parentClusterCalc, parentClusterClay, faecalClusterOrgC, faecalClusterTepC, faecalClusterOpal, &
+    	faecalClusterCalc, faecalClusterClay, remainderOrgC, remainderTepC, remainderOpal, &
+    	remainderCalc, remainderClay
 	logical :: isFaecalIdenticalToParent
 	
 	! ------ Bookkeeping ------		
@@ -821,6 +848,11 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 	parentMolesOpal = particle(iCluster)%molesMineral(iOpal)
 	parentMolesCalc = particle(iCluster)%molesMineral(iCalcite)
 	parentMolesClay = particle(iCluster)%molesMineral(iClay)
+	parentClusterOrgC = parentMolesOrgC * nPxParentCluster
+	parentClusterTepC = parentMolesTepC * nPxParentCluster
+	parentClusterOpal = parentMolesOpal * nPxParentCluster
+	parentClusterCalc = parentMolesCalc * nPxParentCluster
+	parentClusterClay = parentMolesClay * nPxParentCluster
 	parentClusterMass = particle(iCluster)%mass*nPxParentCluster			
 	parentSolidVol = particle(iCluster)%solidVolume	! um3					
 	parentSolidVolOrgMatter = particle(iCluster)%massOrgMatter/RHO_ORGMATTER ! cm3
@@ -882,18 +914,17 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 
 	if (pelletMass > parentClusterMass) then 
 		particle(iCluster)%nPxC = 1d0
-		faecalClusterMass = pelletMass * particle(iCluster)%nPxC
-	
 		safetyCounter = 0
-		do while (ABS(parentClusterMass-faecalClusterMass) > 1d-12 .and. safetyCounter < 200)
+		
+		do while (pelletMass > parentClusterMass .and. safetyCounter < 200)
 			safetyCounter = safetyCounter + 1
-			
+		
 			! ------ Shrink per-pellet solid volumes by factor 0.1 ------
 			! Stop scaling down either when the faecal cluster mass becomes the same as the 
 			! parent cluster mass, or when the faecal pellet volume becomes smaller than that 
 			! of the parent (in this latter case, we make the faecal particles identical as the
 			! parent particles and then we exit the loop)
-	
+			
 			faecalSolidVolOrgMatter = faecalSolidVolOrgMatter * 1d-1 ! cm3
 			faecalSolidVolTep       = faecalSolidVolTep       * 1d-1 ! cm3
 			faecalSolidVolOpal      = faecalSolidVolOpal      * 1d-1 ! cm3
@@ -908,11 +939,56 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 			particle(iCluster)%molesMineral(iOpal) = faecalSolidVolOpal*RHO_OPAL/MOLAR_MASS_OPAL
 			particle(iCluster)%molesMineral(iCalcite) = faecalSolidVolCalc*RHO_CALCITE/MOLAR_MASS_CACO3
 			particle(iCluster)%molesMineral(iClay) = faecalSolidVolClay*RHO_CLAY/MOLAR_MASS_CLAY
-	
+		
 			! ------ Recompute num pellets ------
 			call ParticleDryMass(particle, nClusters, iCluster)
 			pelletMass = particle(iCluster)%mass
-			
+		
+			if (.not. ieee_is_finite(pelletMass) .or. pelletMass <= 0d0) then
+				write(*,*) 'ERROR: invalid pellet mass while shrinking:', pelletMass
+				call WriteStatusAndStop()
+			end if
+		
+			! Avoid creating faecal particles smaller than the ingested parent particle.
+			if (faecalSolidVol <= parentSolidVol) then
+		
+				particle(iCluster)%molesOrgC = parentMolesOrgC
+				particle(iCluster)%molesTepC = parentMolesTepC
+				particle(iCluster)%molesMineral(iOpal) = parentMolesOpal
+				particle(iCluster)%molesMineral(iCalcite) = parentMolesCalc
+				particle(iCluster)%molesMineral(iClay) = parentMolesClay
+		
+				particle(iCluster)%nPxC = nPxParentCluster
+				particle(iCluster)%nPpxP = nPpxParentParticle
+				particle(iCluster)%nPpxC = particle(iCluster)%nPpxP * particle(iCluster)%nPxC
+		
+				call ParticleDryMass(particle, nClusters, iCluster)
+				call ParticleMaterialVolume(particle, nClusters, iCluster)
+				call ParticleFractalDimension(particle, nClusters, iCluster, particle(iCluster)%initType)
+				call ParticleRadius(particle, nClusters, iCluster)
+				call ParticlePorosity(particle, nClusters, iCluster)
+				call ParticleDensity(particle, nClusters, iCluster, Rho)
+				call ParticleStickiness(particle, nClusters, iCluster)
+				call ParticleSettlingVelocity(particle, nClusters, iCluster, Rho, waterDynVisco)
+		
+				isFaecalIdenticalToParent = .true.
+				exit
+			end if
+		
+		end do
+		
+		! If we have managed to have mass cluster parent = mass cluster faecal, without 
+		! the faecal particle volume going too small (vol faecal > vol parent), finalise 
+		! particle fields from the last faecalSolidVol
+		
+		if (.not. isFaecalIdenticalToParent) then
+
+			if (safetyCounter >= 200 .and. pelletMass > parentClusterMass) then
+				write(*,*) 'ERROR: unable to construct a faecal pellet smaller than parent cluster'
+				write(*,*) '  pellet mass, parent-cluster mass:', pelletMass, parentClusterMass
+				call WriteStatusAndStop()
+			end if
+		
 			expectedNumPellets = SafeDivide(parentClusterMass, pelletMass, 0d0)
 			if (.not. ieee_is_finite(expectedNumPellets) .or. expectedNumPellets < 0d0) then
    	 			write(*,*) 'ERROR: invalid expectedNumPellets'
@@ -923,67 +999,8 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 			end if
 			realisedNumPellets = SafeFloorNonNegative(expectedNumPellets) ! round down
 			particle(iCluster)%nPxC = MAX(1d0, realisedNumPellets)
-			
-			if (pelletMass < detection_limit_poc*MOLAR_MASS_CARBON) then
-    			write(*,*) 'WARNING: pelletMass below detection limit:', pelletMass
-    			write(*,*) '	Pellet making process in Scenario A stops and faecal pellet adopts characteristics of parent material'
-    			write(*,*) ' 	faecalSolidVol=', faecalSolidVol
-    			write(*,*) ' 	parentSolidVol=', parentSolidVol
-    			write(*,*) ' 	expectedNumPellets=', expectedNumPellets
-			end if
-
-			! NOTICE: we don't want to round up (which could happen if we used stochastic rounding)
-			! as that will incur in extra material we don't have to form primary particles)
-
-			! ------ Re-check ------
-			! If, in this cycle of making the faecal particles smaller, the faecal particle 
-			! becomes smaller in volume than the parent particle, we will end up making 
-			! faecal particles made out of just one (primary) particle --> not ideal. In 
-			! this case, make the faecal particle identical to the parent particle and stop 
-			! calculations.
-							
-			if (faecalSolidVol <= parentSolidVol) then			
-				particle(iCluster)%molesOrgC = parentMolesOrgC
-				particle(iCluster)%molesTepC = parentMolesTepC
-				particle(iCluster)%molesMineral(iOpal) = parentMolesOpal
-				particle(iCluster)%molesMineral(iCalcite) = parentMolesCalc
-				particle(iCluster)%molesMineral(iClay) = parentMolesClay 
-				particle(iCluster)%nPxC = nPxParentCluster
-				particle(iCluster)%nPpxP = nPpxParentParticle
-				particle(iCluster)%nPpxC = particle(iCluster)%nPpxP * particle(iCluster)%nPxC
-
-				call ParticleDryMass(particle, nClusters, iCluster)
-				call ParticleMaterialVolume(particle, nClusters, iCluster)
-				call ParticleFractalDimension( particle, nClusters, iCluster, particle(iCluster)%initType)
-				call ParticleRadius(particle, nClusters, iCluster)
-				call ParticlePorosity(particle, nClusters, iCluster)
-				call ParticleDensity(particle, nClusters, iCluster, Rho)
-				call ParticleStickiness(particle, nClusters, iCluster)	
-				call ParticleSettlingVelocity(particle, nClusters, iCluster, Rho, waterDynVisco)
-							
-				isFaecalIdenticalToParent = .true.	
-				exit
-			end if
-			
-			! ------ Safety: break if pelletMass becomes zero or non-finite ------
-			if (.not. ieee_is_finite(pelletMass) .or. pelletMass <= 0d0) then
-				write(*,*) 'ERROR: pelletMass invalid while shrinking'
-				call WriteStatusAndStop( )
-			end if
-					
-		end do ! end shrink loop
 		
-		! If we left due to safetyCounter limit, handle gracefully
-    	if (safetyCounter >= 200) then
-        	write(*,*) 'WARNING: shrink loop reached iteration limit; proceeding with best-effort pellet sizing'
-    	end if
-		
-		! If we have managed to have mass cluster parent = mass cluster faecal, without 
-		! the faecal particle volume going too small (vol faecal > vol parent), finalise 
-		! particle fields from the last faecalSolidVol
-		
-		if (.not. isFaecalIdenticalToParent) then
-
+			! Continue with final particle-property calculations.
 			particle(iCluster)%solidVolume = faecalSolidVol ! um3 
 			!call ParticleDryMass( particle, nClusters, iCluster ) ! no need for it, already calculated	
 			
@@ -1046,15 +1063,6 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 			particle(iCluster)%nPpxP = nPrimParticles
 			particle(iCluster)%nPpxC = particle(iCluster)%nPpxP * particle(iCluster)%nPxC
 			
-			! Compute faecal cluster mass and the remainder, and send any remaining (physical) 
-			! leftover mass to microbial solubilisation
-			faecalClusterMass = pelletMass * particle(iCluster)%nPxC
-			remainder = parentClusterMass - faecalClusterMass ! g
-			if (IsQuantityEffectivelyZero(remainder, detection_limit_poc*MOLAR_MASS_CARBON)) remainder = 0d0
-			if (remainder > 0d0) then
-				SMSterm(iMicrobSolubOrgC) = SMSterm(iMicrobSolubOrgC) + remainder/MOLAR_MASS_CARBON
-			end if
-
 		end if
 		
 ! ----------------------------------------------------------------------------------------
@@ -1109,18 +1117,60 @@ subroutine MesozooplanktonEgestion(particle, nClusters, iCluster, SMSterm, faeca
 		particle(iCluster)%nPpxP = nPrimParticles
 		particle(iCluster)%nPpxC = particle(iCluster)%nPpxP * particle(iCluster)%nPxC
 
-		! Compute faecal cluster mass and the remainder, and send any remaining (physical) 
-		! leftover mass to microbial solubilisation
-		faecalClusterMass = pelletMass * particle(iCluster)%nPxC
-		remainder = parentClusterMass - faecalClusterMass ! g
-		if (IsQuantityEffectivelyZero(remainder, detection_limit_poc*MOLAR_MASS_CARBON)) remainder = 0d0
-		if (remainder > 0d0) then
-			SMSterm(iMicrobSolubOrgC) = SMSterm(iMicrobSolubOrgC) + remainder/MOLAR_MASS_CARBON
-		end if
-
 	end if
 	
-	! Check: is the particle physically consistent?
+	! ------ Route material not represented in the integer number of pellets ------
+	faecalClusterOrgC = particle(iCluster)%molesOrgC * particle(iCluster)%nPxC
+	faecalClusterTepC = particle(iCluster)%molesTepC * particle(iCluster)%nPxC
+	faecalClusterOpal = particle(iCluster)%molesMineral(iOpal) * particle(iCluster)%nPxC
+	faecalClusterCalc = particle(iCluster)%molesMineral(iCalcite) * particle(iCluster)%nPxC
+	faecalClusterClay = particle(iCluster)%molesMineral(iClay) * particle(iCluster)%nPxC
+	
+	remainderOrgC = parentClusterOrgC - faecalClusterOrgC
+	remainderTepC = parentClusterTepC - faecalClusterTepC
+	remainderOpal = parentClusterOpal - faecalClusterOpal
+	remainderCalc = parentClusterCalc - faecalClusterCalc
+	remainderClay = parentClusterClay - faecalClusterClay
+	
+	! Remove negligible round-off residuals
+	if (IsQuantityEffectivelyZero(remainderOrgC, detection_limit_poc)) remainderOrgC = 0d0
+	if (IsQuantityEffectivelyZero(remainderTepC, detection_limit_poc)) remainderTepC = 0d0
+	if (IsQuantityEffectivelyZero(remainderOpal, detection_limit_opal)) remainderOpal = 0d0
+	if (IsQuantityEffectivelyZero(remainderCalc, detection_limit_calc)) remainderCalc = 0d0
+	if (IsQuantityEffectivelyZero(remainderClay, detection_limit_clay)) remainderClay = 0d0
+	
+	! A materially negative remainder would mean that the generated pellets contain
+	! more of a constituent than was present in the parent cluster.
+	if (remainderOrgC < 0d0 .or. remainderTepC < 0d0 .or. &
+		remainderOpal < 0d0 .or. remainderCalc < 0d0 .or. &
+		remainderClay < 0d0) then
+		write(*,*) 'ERROR: faecal pellets exceed available parent material'
+		write(*,*) '  OrgC remainder   :', remainderOrgC
+		write(*,*) '  TEP-C remainder  :', remainderTepC
+		write(*,*) '  opal remainder   :', remainderOpal
+		write(*,*) '  calcite remainder:', remainderCalc
+		write(*,*) '  clay remainder   :', remainderClay
+		call WriteStatusAndStop()
+	end if
+	
+	! Route each positive residual to its corresponding solubilisation pool
+	if (remainderOrgC > 0d0) then
+		SMSterm(iMicrobSolubOrgC) = SMSterm(iMicrobSolubOrgC) + remainderOrgC
+	end if
+	if (remainderTepC > 0d0) then
+		SMSterm(iMicrobSolubTepC) = SMSterm(iMicrobSolubTepC) + remainderTepC
+	end if
+	if (remainderCalc > 0d0) then
+		SMSterm(iMicrobSolubCaCO3) = SMSterm(iMicrobSolubCaCO3) + remainderCalc
+	end if
+	if (remainderOpal > 0d0) then
+		SMSterm(iMicrobSolubOpal) = SMSterm(iMicrobSolubOpal) + remainderOpal
+	end if
+	if (remainderClay > 0d0) then
+		SMSterm(iMicrobSolubClay) = SMSterm(iMicrobSolubClay) + remainderClay
+	end if
+	
+	! ------ Check: is the particle physically consistent? ------
 	call CheckParticleSanity(particle, nClusters, iCluster, 'faecal pellet creation')
 
 end subroutine MesozooplanktonEgestion
@@ -1132,10 +1182,11 @@ subroutine MesozooplanktonDeath(particle, nClusters, SMSterm, auxTerm, auxCount,
 	iTimeStep, iProfile)
 
 	! ------------------------------------------------------------------------------------
-    ! Some zooplankton will die due to starvation, hatchling failure, disease, etc. It is a 
-    ! prognostic process and a function of the current standing zoo biomass. This subroutine 
-    ! creates zooplankton carcasses from organic matter considered "dead". One cluster only
-	! is created, which will contain all the carcasses.
+    ! Carcass production is diagnosed from the prescribed mesozooplankton standing biomass 
+    ! using a first-order mortality rate. The prescribed mesozooplankton biomass itself is 
+    ! not depleted by this calculation. The subroutine creates zooplankton carcasses from 
+    ! organic matter considered "dead". One cluster only is created, which will contain all 
+    ! the carcasses.
     ! ------------------------------------------------------------------------------------
     
     integer, intent(in) :: nClusters,  iTimeStep, iProfile	

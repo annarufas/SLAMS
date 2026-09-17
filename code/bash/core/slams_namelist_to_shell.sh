@@ -1,19 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ====================================================================================== 
-# SLAMS 2.0 – Namelist Section Parser
+# SLAMS – Namelist Section Parser
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas 
+# Created: 16 Feb 2026    
+# Last updated: 14 Sep 2026
 #                                                                                                                                                                           
 # PURPOSE
-#   Parse selected sections of a SLAMS namelist file and export the requested sections 
+# -------
+#   Parse selected sections of a SLAMS namelist file and export the requested variables 
 #   into the current shell environment.
 #
-# NOTE
-#   This file defines reusable functions for SLAMS workflows.
-#   It is not intended to be executed directly.
-#   It is sourced by higher-level workflow scripts.
-#   
+# NOTES
+# -----
+# 	- This file contains internal functions used by SLAMS workflows.
+#	- It is sourced by higher-level pipeline scripts and is not intended to be executed or
+#   modified directly by users.
+# 
 # ======================================================================================                
 
 slams_namelist_to_shell () 

@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 #SBATCH --job-name=checkout 
 #SBATCH --time=00:10:00                   
 #SBATCH --partition=devel
@@ -10,14 +9,18 @@ set -euo pipefail # abort the script if errors with commands, variables and pipe
 IFS=$'\n\t'       # controls bash word splitting
 
 # ====================================================================================== 
-# SLAMS 2.0 – Check Run Status
+# SLAMS – Check Run Status
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas
+# Created: 16 Feb 2026
+# Last updated: 16 Sep 2026  
 #                                                                                                                                                                           
 # PURPOSE
-#   Inspect completed run directories and resubmit incomplete or failed runs if necessary.
+# -------
+#   Inspects completed run directories and resubmits incomplete or failed runs when needed.
 #
 # USAGE
+# -----
 #   Local:
 #       ./check_output_status.sh <config_name> 
 #
@@ -133,18 +136,18 @@ check_status_run ()
 # Submit SLURM job for specific run
 # --------------------------------------------------
 
-submit_job () 
+submit_job ()
 {
-	local offset="$1"  # Use a local variable for clarity
-    sbatch --export=OFFSET="$offset",RUNS_DIR="$RUNS_DIR" \
+    local run_id="$1"
+    sbatch --export=ALL,CONFIG_NAME="$CONFIG_NAME",RUN_ID="$run_id",RUNS_DIR="$RUNS_DIR" \
            --time=10:00:00 \
            --array=0 \
            --mem-per-cpu=1000MB \
-           --partition=long \
-           --qos=earth \
+           --partition=short \
+           --qos=standard \
            --job-name=runscript \
            --output="$LOGS_DIR/log_runscript_%A_%a.log" \
-           "$PIPELINE_DIR/runscript.sh"
+           "$PIPELINE_DIR/runscript_balanced.sh"
 }
 
 # --------------------------------------------------

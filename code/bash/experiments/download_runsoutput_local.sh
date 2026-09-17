@@ -1,20 +1,37 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ======================================================================================
-# Author: A. Rufas | 14 Feb 2026
+# SLAMS – Download Sensitivity-Test Outputs
 #
-# This script download runsoutput.mat files afetr sensitivity tests. It is to be run locally
+# Author: A. Rufas
+# Created: 16 Feb 2026
+# Last updated: 14 Sep 2026
+#
+# PURPOSE
+# -------
+# 	Downloads runsoutput.mat files from sensitivity-test runs on the ARC HPC system to the
+# 	corresponding local SLAMS test directories.
 #
 # USAGE
 # -----
-#   ./run_param_sensitivity_test.sh
+# 	./download_runsoutput_local.sh
+#
+# REQUIREMENTS
+# ------------
+# 	- SSH access to the ARC HPC system
+# 	- scp
+#
+# USER CONFIGURATION
+# ------------------
+# 	Edit the remote and local paths below if your directory structure differs.
+#
 # ======================================================================================
 
 # Define remote user and base path
 USER="wolf4894"
 SERVER="htc-login.arc.ox.ac.uk"
-REMOTE_BASE="/data/eart-slam-dunk/wolf4894/Projects/SLAMS2.0/tests"
-LOCAL_BASE="/Users/Anna/LocalDocuments/Academic/Projects/SLAMS2.0/tests"
+REMOTE_BASE="/data/eart-slam-dunk/wolf4894/Projects/SLAMS/tests"
+LOCAL_BASE="/Users/Anna/LocalDocuments/Academic/Projects/SLAMS/tests"
 
 # Get list of directories starting with LOCALTS6_ on the remote server
 DIRS=$(ssh ${USER}@${SERVER} "ls -d ${REMOTE_BASE}/LOCALTS6_*/modelruns 2>/dev/null")

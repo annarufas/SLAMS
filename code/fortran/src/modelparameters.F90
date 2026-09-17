@@ -175,7 +175,7 @@ real*8 :: zoo_distrib_slope, detection_radius_factor_mesozoo, agg_to_zoo_size_ra
 real*8 :: q10_mesozoo, q10_microb, resp_rate_poc_max_0deg_mesozoo, resp_rate_poc_max_0deg_microb, &
 	resp_rate_tepc_max_0deg_microb, resp_rate_poc_max_mesozoo, resp_rate_poc_max_microb, &
 	resp_rate_tepc_max_microb, k_O2_resp, solub_rate_poc, solub_rate_tepc, photodegradation_rate_tepc
-real*8 :: dissol_rate_calc, dissol_rate_opal_0deg, q10_bSi
+real*8 :: dissol_rate_calc, dissol_rate_calc_zoo_gut, dissol_rate_opal_0deg, q10_bSi
 
 ! Fixed parameters
 real*8 :: sea_surface_microlayer_depth, breaking_reynolds_threshold, min_par_for_photosynthesis, &
@@ -482,7 +482,8 @@ subroutine InitialiseRuntimeParameters()
 		gut_passage_time_mesozoo, mort_rate_mesozoo, q10_mesozoo, q10_microb, resp_rate_poc_max_0deg_mesozoo, &
 		resp_rate_poc_max_0deg_microb, resp_rate_tepc_max_0deg_microb, resp_rate_poc_max_mesozoo, &
 		resp_rate_poc_max_microb, resp_rate_tepc_max_microb, k_O2_resp, solub_rate_poc, &
-		solub_rate_tepc, photodegradation_rate_tepc, dissol_rate_calc, dissol_rate_opal_0deg, q10_bSi
+		solub_rate_tepc, photodegradation_rate_tepc, dissol_rate_calc, dissol_rate_calc_zoo_gut, &
+		dissol_rate_opal_0deg, q10_bSi
 		
 	namelist /FixedParameters/ &
 		sea_surface_microlayer_depth, breaking_reynolds_threshold, min_par_for_photosynthesis, &
@@ -551,7 +552,7 @@ subroutine InitialiseRuntimeParameters()
 	carbon_density_threshold_zoo_ingestion 	= 1d-6 ! g C cm-3
 	zoo_absorption_eff_carbon        		= 0.69d0
 	zoo_net_growth_eff               		= 0.75d0	
-	gut_passage_time_mesozoo         		= 1800d0 ! s (standard value is 30 min = 1,800 s, Irigoien (1998))
+	gut_passage_time_mesozoo         		= 4000d0 ! s (standard value is 30 min = 1,800 s, Irigoien (1998))
 	mort_rate_mesozoo                		= 0.020d0 ! d-1
 
 	! Q10 factors					
@@ -573,10 +574,11 @@ subroutine InitialiseRuntimeParameters()
 	photodegradation_rate_tepc = 0.30d0 ! d-1, Mari et al. (2017)
 	
 	! Abiotic mineral dissolution parameters
-	dissol_rate_calc 		= 5.0d0 ! d-1, kappa, Jansen et al. 2002 (range 1-7 d-1) (more stable than aragonite, so lower dissolution rate constant)
+	dissol_rate_calc 		 = 5.0d0 ! d-1, kappa, Jansen et al. 2002 (range 1-7 d-1) (more stable than aragonite, so lower dissolution rate constant)
+	dissol_rate_calc_zoo_gut = 20d0 ! d-1, Jansen & Wolf Gladrow (2001)
 	!dissol_rate_opal = 0.05d0 ! d-1 (0.05 approx. d-1 from VanCappellen et al. 2002, World average surface waters; 0.008 to 0.18 from Bidle & Azam 1999, in this case when colonized by bacteria)
-	dissol_rate_opal_0deg 	= 1d-3
-	q10_bSi 				= 2.3d0 ! Kamatani 1982
+	dissol_rate_opal_0deg 	 = 1d-3
+	q10_bSi 				 = 2.3d0 ! Kamatani 1982
 
 	! ------ FIXED parameters defaults ------
 

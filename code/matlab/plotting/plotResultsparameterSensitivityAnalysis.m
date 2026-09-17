@@ -35,29 +35,29 @@ testrunDir = {'LOCALTS6';... % default run - 1
               'LOCALTS6_k_O2_resp_LOW'; 'LOCALTS6_k_O2_resp_UPP';... % 22-23
               'LOCALTS6_solub_rate_poc_LOW'; 'LOCALTS6_solub_rate_poc_UPP';... % 24-25
               'LOCALTS6_solub_rate_tepc_LOW'; 'LOCALTS6_solub_rate_tepc_UPP';... % 26-27
-              'LOCALTS6_dissol_rate_calc_LOW'; 'LOCALTS6_dissol_rate_calc_UPP';... % 28-29
+              'LOCALTS6_dissol_rate_calc_zoo_gut_LOW'; 'LOCALTS6_dissol_rate_calc_zoo_gut_UPP';... % 28-29
               'LOCALTS6_dissol_rate_opal_0deg_LOW'; 'LOCALTS6_dissol_rate_opal_0deg_UPP';... % 30-31
               'LOCALTS6_q10_bSi_LOW'; 'LOCALTS6_q10_bSi_UPP';... % 32-33
               'LOCALTS6_photodegradation_rate_tepc_LOW'; 'LOCALTS6_photodegradation_rate_tepc_UPP'}; % 34-35
 
 paramMetadata = {...
-    '$$\theta_{\mathrm{bSi:C,diat}}$$',                   0.13,   0.01,   0.50;   % Diatom cellular opal:POC
-    '$$\theta_{\mathrm{calc:C,cocco}}^{\mathrm{max}}$$',  0.50,   0.05,   2.0;    % Max. coccolithophore cellular PIC:POC
-    '$$f_{\mathrm{TEP}}$$',                               0.40,   0.02,   0.60;   % Fraction of a phytoplankton cell exuded as TEP matter
-    '$$\xi_{\mathrm{z}}$$',                               1.0,    0.40,   1.0;    % Slope of the mesozooplankton normalised biomass size spectra
-    '$$R_{\mathrm{z}}$$',                                 2.64,   1.0,    5.0;    % Mesozooplankton detection radius factor
-    '$$\theta_{\mathrm{agg:zoo}}$$',                      1.0,    0.20,   4.0;    % Ratio aggregate to zooplankter
-    '$$f_{\mathrm{OM}}^{\mathrm{ing,surf}}$$',            0.20,   0.10,   0.80;   % Min. fraction of OM in a surface-ocean particle to be deemed appetitive
-    '$$Q_{\mathrm{10,m}}$$',                              2.2,    1.5,    3.0;    % Microbial Q10
-    '$$\lambda_{\mathrm{m,C_{POC}}}^{\mathrm{max,0}}$$',  0.01,   0.001,  0.20;   % Max. microbial POC-specific respiration rate at 0ºC
-    '$$\lambda_{\mathrm{m,C_{TEP}}}^{\mathrm{max,0}}$$',  0.01,   0.001,  0.10;   % Max. microbial TEP-C-specific respiration rate at 0ºC
-    '$$k_{\mathrm{O2}}$$',                                0.50,   0.0005, 1.0;    % O2 half-saturation constant for respiration
-    '$$\omega_{\mathrm{C_{POC}}}$$',                      0.005,  0.001,  0.10;   % Microbial solubilisation rate for Corg
-    '$$\omega_{\mathrm{C_{TEP}}}$$',                      0.010,  0.001,  0.10;   % Microbial solubilisation rate for TEP-C
-    '$$\kappa_{\mathrm{calc}}$$',                         2.0,    1.0,    7.0;    % Calcite dissolution rate
-    '$$\kappa_{\mathrm{bSi}}^{\mathrm{max,0}}$$',         0.10,   0.0005, 0.50;   % Max. opal dissolution rate at 0ºC
-    '$$Q_{\mathrm{10,bSi}}$$',                            2.3,    1.5,    3.5;    % Opal dissolution rate coefficient
-    '$$\phi_{\mathrm{photo}}$$',                          0.30,   0.10,   0.70;   % Photodegradation rate of TEP
+    '$$\theta_{\mathrm{bSi:C,diat}}$$',                   0.13,   0.01,   0.50;   % 1- Diatom cellular opal:POC
+    '$$\theta_{\mathrm{calc:C,cocco}}^{\mathrm{max}}$$',  0.50,   0.05,   2.0;    % 2- Max. coccolithophore cellular PIC:POC
+    '$$f_{\mathrm{TEP}}$$',                               0.40,   0.02,   0.60;   % 3- Fraction of a phytoplankton cell exuded as TEP matter
+    '$$\xi_{\mathrm{z}}$$',                               1.0,    0.40,   1.0;    % 4- Slope of the mesozooplankton normalised biomass size spectra
+    '$$R_{\mathrm{z}}$$',                                 2.64,   1.0,    5.0;    % 5- Mesozooplankton detection radius factor
+    '$$\theta_{\mathrm{agg:zoo}}$$',                      1.0,    0.20,   4.0;    % 6- Ratio aggregate to zooplankter
+    '$$f_{\mathrm{OM}}^{\mathrm{ing,surf}}$$',            0.20,   0.10,   0.80;   % 7- Min. fraction of OM in a surface-ocean particle to be deemed appetitive
+    '$$Q_{\mathrm{10,m}}$$',                              2.2,    1.5,    3.0;    % 8- Microbial Q10
+    '$$\lambda_{\mathrm{m,C_{POC}}}^{\mathrm{max,0}}$$',  0.01,   0.001,  0.20;   % 9- Max. microbial POC-specific respiration rate at 0ºC
+    '$$\lambda_{\mathrm{m,C_{TEP}}}^{\mathrm{max,0}}$$',  0.01,   0.001,  0.10;   % 10- Max. microbial TEP-C-specific respiration rate at 0ºC
+    '$$k_{\mathrm{O2}}$$',                                0.50,   0.0005, 1.0;    % 11- O2 half-saturation constant for respiration
+    '$$\omega_{\mathrm{C_{POC}}}$$',                      0.005,  0.001,  0.10;   % 12- Microbial solubilisation rate for Corg
+    '$$\omega_{\mathrm{C_{TEP}}}$$',                      0.010,  0.001,  0.10;   % 13- Microbial solubilisation rate for TEP-C
+    '$$\kappa_{\mathrm{zoo,calc}}$$',                     20.0,   1.0,    30.0;   % 14- Calcite dissolution rate in mesozooplankton gut
+    '$$\kappa_{\mathrm{bSi}}^{\mathrm{max,0}}$$',         0.10,   0.0005, 0.50;   % 15- Max. opal dissolution rate at 0ºC
+    '$$Q_{\mathrm{10,bSi}}$$',                            2.3,    1.5,    3.5;    % 16- Opal dissolution rate coefficient
+    '$$\phi_{\mathrm{photo}}$$',                          0.30,   0.10,   0.70;   % 17- Photodegradation rate of TEP
 }; 
 
 figureSubfolder = 'test_param_sensitivity';
@@ -290,9 +290,9 @@ paramSelect = {...
     '$$\theta_{\mathrm{bSi:C,diat}}$$', ...
     '$$\theta_{\mathrm{calc:C,cocco}}^{\mathrm{max}}$$', ...
     '$$f_{\mathrm{TEP}}$$', ...
-    '$$R_{\mathrm{z}}$$', ...
     '$$\theta_{\mathrm{agg:zoo}}$$', ...
     '$$f_{\mathrm{OM}}^{\mathrm{ing,surf}}$$', ...
+    '$$Q_{\mathrm{10,m}}$$', ...
     '$$\lambda_{\mathrm{m,C_{POC}}}^{\mathrm{max,0}}$$', ...
     '$$\lambda_{\mathrm{m,C_{TEP}}}^{\mathrm{max,0}}$$', ...
     '$$\omega_{\mathrm{C_{TEP}}}$$', ...

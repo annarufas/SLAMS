@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-
 #SBATCH --job-name=readout 
-#SBATCH --time=14:00:00                   
-#SBATCH --partition=long
-#SBATCH --qos=earth
+#SBATCH --time=00:10:00                   
+#SBATCH --partition=short
+#SBATCH --qos=standard
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=60GB  # Alternative: total memory instead of per CPU
@@ -13,9 +12,11 @@ set -euo pipefail # abort the script if errors with commands, variables and pipe
 IFS=$'\n\t'       # controls bash word splitting
 
 # ======================================================================================
-# SLAMS 2.0 – Post-Processing Pipeline Stage
+# SLAMS – Post-Processing Pipeline Stage
 #
-# Author: A. Rufas | 16 Feb 2026
+# Author: A. Rufas
+# Created: 16 Feb 2026    
+# Last updated: 14 Sep 2026   
 #
 # PURPOSE
 # -------
@@ -33,16 +34,16 @@ IFS=$'\n\t'       # controls bash word splitting
 #       sbatch --export=ALL,CONFIG_NAME=<config_name> read_model_output.sh
 # 
 # ASSUMPTIONS
-# ------------------
+# -----------
 #     - All run_* directories exist
 #     - Model output files are present
 #
 # PERFORMANCE NOTES
 # -----------------
-#   Global configuration:
-#       readSlamsOutput:                    ~14 hours
+#   - Global configuration:
+#       readSlamsOutput                   : ~14 hours
 #       calculateBcpMetricsFromSlamsOutput: ~60 hours
-#   Local configuration:                    < 5 minutes
+#   - Local configuration                 : < 5 min
 #
 # ======================================================================================
 

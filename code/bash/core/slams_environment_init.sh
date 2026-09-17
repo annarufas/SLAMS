@@ -1,26 +1,32 @@
 #!/usr/bin/env bash
 
 # ====================================================================================== 
-# SLAMS 2.0 – Environment Initialisation
+# SLAMS – Environment Initialisation
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas
+# Created: 16 Feb 2026    
+# Last updated: 14 Sep 2026 
 #                                                                                                                                                                           
 # PURPOSE
-#   Initialises the runtime environment for SLAMS-2.0 by:
+# -------
+#   Initialises the runtime environment for SLAMS by:
 #     - Validating CONFIG_NAME
 #     - Loading required modules (MATLAB, Intel, MKL) when running under SLURM
 #     - Configuring library paths (e.g. MKL, OpenMP)
 #
-# NOTE
-#   This file defines reusable functions for SLAMS workflows.
-#   It is not intended to be executed directly.
-#   It is sourced by higher-level workflow scripts.
+# NOTES
+# -----
+# 	- This file contains internal functions used by SLAMS workflows.
+# 	- It is sourced by higher-level pipeline scripts and is not intended to be executed or 
+# 	modified directly by users.
+# 	- HPC module names and versions are site-specific and may need to be adapted for 
+#   different systems.
 #   
 # ======================================================================================                
 
 slams_environment_init () 
 {	
-    if [[ "${CHOICE_RUN_IN_SLURM:-false}" == "true" ]]; then
+    if [[ -n "${SLURM_JOB_ID:-}" || "${CHOICE_RUN_IN_SLURM:-false}" == "true" ]]; then
         log "Loading modules for SLURM execution"
 
         # --- MATLAB --- 

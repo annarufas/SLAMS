@@ -60,19 +60,24 @@ config/*
 # Old / archived code
 #################################################
 
-code/old_matlab/
-code/matlab/unused/
-code/fortran/src_2023/
-code/fortran/src_2024/
-code/fortran/src_2025/
+code/fortran/legacy/
+code/matlab/legacy/
+code/bash/legacy/
+
+#################################################
+# Figures
+#################################################
+
+figures/*
+!figures/slams_particle_concept.png
+!figures/slams_overview.png
+!figures/slams_example_results.png
 
 #################################################
 # Hidden / unused folders
 #################################################
 
-notinuse/
-doc/
-figures/
+docs/
 
 #################################################
 # OS junk

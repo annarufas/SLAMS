@@ -10,14 +10,16 @@ set -euo pipefail # abort the script if errors with commands, variables and pipe
 IFS=$'\n\t'       # controls bash word splitting
 
 # ====================================================================================== 
-# SLAMS 2.0 – Input Preparation and Build Pipeline
+# SLAMS – Input Preparation and Build Pipeline
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas
+# Created: 16 Feb 2026
+# Last updated: 14 Sep 2026    
 #                                                                                                                                                                           
 # PURPOSE
 # -------
-# Script to clean model run folders after detecting errors in model configuration files/code
-# files and re-run if necessary.
+# 	Clean model run folders after detecting errors in model configuration files/code
+# 	files and re-run if necessary.
 #
 # USAGE
 # -----
@@ -70,7 +72,7 @@ main ()
 remove_single_directory ()
 {
 	log "Start cleaning"
-	rm -rf /data/eart-slam-dunk/wolf4894/Projects/SLAMS2.0/tests/LOCALTS6_*
+	rm -rf /data/eart-slam-dunk/wolf4894/Projects/SLAMS/tests/LOCALTS6_*
 	log "Finished"
 }
 
@@ -78,7 +80,7 @@ remove_single_directory ()
 remove_test_directories () 
 {
     for i in {100..161}; do
-        rm -rf "/data/eart-slam-dunk/wolf4894/Projects/SLAMS2.0/tests/test$i"
+        rm -rf "/data/eart-slam-dunk/wolf4894/Projects/SLAMS/tests/test$i"
     done
 }
 

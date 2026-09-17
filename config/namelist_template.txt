@@ -2,7 +2,7 @@
 !
 ! Namelist for pre- and post- processing SLAMS simulations
 !
-! Author: A. Rufas | 16 Feb 2025 6                            							                                                            !
+! Author: A. Rufas | 16 Jul 2026                            							                                                     
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !-----------------------------------------------------------------------------------------
@@ -65,11 +65,11 @@ C_quota_diat_min=10e-12
 C_quota_flagel_max=10000e-12
 C_quota_flagel_min=400e-12
 C_quota_cocco_max=5.0e-12
-C_quota_cocco_min=0.8e-12
+C_quota_cocco_min=0.80e-12
 C_quota_pico_max=0.10e-12
 C_quota_pico_min=0.0020e-12
 Si2C_diat=0.13
-Calc2C_cocco_max=0.50
+Calc2C_cocco_max=0.40
 k_omega=1.1
 phyto_life_span_factor=4.0
 phyto_max_allowed_life_days=30.0
@@ -85,7 +85,7 @@ frac_OM_zoo_ingestion_deep=0.50
 carbon_density_threshold_zoo_ingestion=1e-6
 zoo_absorption_eff_carbon=0.70
 zoo_net_growth_eff=0.75
-gut_passage_time_mesozoo=4800.0
+gut_passage_time_mesozoo=4000.0
 mort_rate_mesozoo=0.050
 q10_mesozoo=2.0
 q10_microb=2.2
@@ -100,6 +100,7 @@ solub_rate_poc=0.005
 solub_rate_tepc=0.01
 photodegradation_rate_tepc=0.30
 dissol_rate_calc=2.0
+dissol_rate_calc_zoo_gut=20.0
 dissol_rate_opal_0deg=0.10
 q10_bSi=2.3
 /

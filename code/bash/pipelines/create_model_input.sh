@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-
 #SBATCH --job-name=input 
 #SBATCH --time=06:00:00                   
 #SBATCH --partition=short
-#SBATCH --qos=earth
+#SBATCH --qos=standard
 #SBATCH --mem=100GB
 #SBATCH --output=../../../logs/log_input_%A.log
 
@@ -11,9 +10,11 @@ set -euo pipefail # abort the script if errors with commands, variables and pipe
 IFS=$'\n\t'       # controls bash word splitting
 
 # ====================================================================================== 
-# SLAMS 2.0 – Input Preparation and Build Pipeline
+# SLAMS – Input Preparation and Build Pipeline
 #
-# Author: A. Rufas | 16 Feb 2026    
+# Author: A. Rufas
+# Created: 16 Feb 2026    
+# Last updated: 14 Sep 2026   
 #                                                                                                                                                                           
 # PURPOSE
 # -------
@@ -40,7 +41,7 @@ IFS=$'\n\t'       # controls bash word splitting
 # NOTES
 # -----
 #   - Forcing data generation is the most computationally expensive step.
-#   - Use FORCING_MODE=import or FORCING_MODE=reuse (in slams_workflow_config.sh) to avoid regeneration.
+# 	- To avoid regeneration, set FORCING_MODE to import or reuse in slams_workflow_config.sh.
 #
 # ARCHITECTURE PRINCIPLE
 # ----------------------
