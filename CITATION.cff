@@ -4,7 +4,7 @@ message: "If you use SLAMS in your research, please cite this software and the a
 title: "SLAMS"
 type: software
 version: 2.0.0
-date-released: 2026-09-16
+date-released: 2026-09-17
 
 license-url: "https://github.com/annarufas/SLAMS/blob/main/LICENSE"
 repository-code: "https://github.com/annarufas/SLAMS"
