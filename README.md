@@ -1,7 +1,6 @@
 # SLAMS
 
 ![README cover](figures/slams_particle_concept.png)
-*Conceptual schematic of the SLAMS-2.0 particle-resolving framework. Adapted from Rufas et al. (2026); see the associated [preprint](https://doi.org/10.22541/essoar.177316670.08373510/v2).*
 
 SLAMS v2.0.0 (**Stochastic, Lagrangian Aggregate Model of Sinking particles**) is a fast, modular Fortran 90 particle-tracking model designed to simulate biogenic marine particle attributes and their dynamics in the ocean's biological carbon pump. 
 
@@ -15,7 +14,7 @@ SLAMS v2.0.0 (**Stochastic, Lagrangian Aggregate Model of Sinking particles**) i
 > As the model developer, I can offer guidance on model structure, forcing,
 > parameterisation, configuration, and output interpretation.
 >
-> 📬 **Email:** [Anna Rufas](mailto:Anna.RufasBlanco@earth.ox.ac.uk)
+> 📬 **Email** Anna Rufas at Anna.RufasBlanco@earth.ox.ac.uk
 
 ## Key Features
 
