@@ -1,0 +1,5 @@
+# Keep MATLAB files visible, but exclude them from the language percentage
+code/matlab/** linguist-detectable=false
+
+# Explicitly classify the core model as Fortran
+code/fortran/** linguist-language=Fortran
