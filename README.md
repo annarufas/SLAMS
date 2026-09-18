@@ -311,7 +311,7 @@ Computational resources were provided by the University of Oxford Advanced Resea
 
 ## Citation
 
-If SLAMS contributes to your research, please cite the associated paper and software release. The recommended citation is provided in [`CITATION.cff`](CITATION.cff).
+If SLAMS contributes to your research, please cite both the associated paper and the archived software release. The recommended citation is provided in [`CITATION.cff`](CITATION.cff).
 
 The software may be used, modified, and redistributed for non-commercial purposes subject to the licence conditions; see [`LICENSE`](LICENSE).
 
