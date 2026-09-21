@@ -1,32 +1,85 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22832464.svg)](https://doi.org/10.5281/zenodo.22832464)
+[![Version](https://img.shields.io/badge/version-2.0.0-31506f)](https://doi.org/10.5281/zenodo.22832464)
+[![Fortran 90](https://img.shields.io/badge/core-Fortran%2090-734f96)](code/fortran/src/)
 
 # SLAMS
 
+**Follow marine particles. Test the processes that shape the biological carbon pump.**
+
 ![README cover](figures/slams_particle_concept.png)
 
-SLAMS v2.0.0 (**Stochastic, Lagrangian Aggregate Model of Sinking particles**) is a fast, modular Fortran 90 particle-tracking model designed to simulate biogenic marine particle attributes and their dynamics in the ocean's biological carbon pump. 
+SLAMS (**Stochastic, Lagrangian Aggregate Model of Sinking particles**) is a particle-resolving research model for investigating how marine particles form, change, and transport carbon through the ocean.
+
+Unlike models that prescribe a bulk sinking flux, SLAMS follows populations of biogenic particles and lets fluxes and size spectra emerge from their interactions Use it to connect aggregation, fragmentation, remineralisation, mineral dissolution, and zooplankton repackaging to biological carbon-pump outcomes –from a single water column to a global grid.
+
+**[Research questions](#what-can-you-investigate) ·
+[Is SLAMS for me?](#is-slams-right-for-you) ·
+[Quick start](#quick-start) ·
+[Example results](#example-results) ·
+[Preprint](https://doi.org/10.22541/essoar.177316670.08373510/v2)**
+
+## What can you investigate?
+
+SLAMS is designed for questions such as:
+
+- How do aggregation and fragmentation reshape particle size spectra and carbon transfer efficiency?
+- How do particle composition, porosity, and mineral content affect sinking and remineralisation?
+- How does zooplankton processing alter the fate of sinking material?
+- Why does carbon transfer vary between ocean environments or forcing scenarios?
+- Which uncertain process parameters matter most for modelled biological pump metrics?
+
+| If you want to… | SLAMS lets you… |
+|---|---|
+| Test a process-level hypothesis | Switch and parameterise particle processes within a controlled numerical experiment |
+| Study a station or region | Run one or more independently forced water columns at selected coordinates |
+| Explore large-scale patterns | Scale the column framework across a global grid using parallel job arrays |
+| Compare mechanisms with observations | Diagnose particle size, abundance, composition, flux, and  biological pump metrics |
+| Extend a particle model | Work with a modular Fortran core and separate preprocessing, workflow, and analysis layers |
+
+## Is SLAMS right for you?
+
+SLAMS is most useful for marine biogeochemists, ocean modellers, and
+particle-dynamics researchers who need a mechanistic view of sinking-particle
+transformations. It is particularly well suited to process experiments,
+sensitivity analyses, site comparisons, and regional-to-global applications.
+
+Before adopting it, be aware that:
+
+- SLAMS is a **one-dimensional water-column model**. Columns do not exchange
+  particles laterally.
+- The supplied workflow uses **Fortran, Bash, and MATLAB**. Local-column
+  experiments can run on a Unix-like machine, while large ensembles and global
+  experiments are best suited to an HPC system.
+- Environmental forcing must be supplied externally. A prepared forcing dataset
+  is available for the included example configuration.
+- The model is stochastic, so experiment design and random-seed configuration
+  matter for reproducibility and uncertainty analysis.
+
+If this matches your question, start with the included `LOCALTS6` experiment or
+adapt the template to your own locations and parameters.
+
+## Why SLAMS?
 
 > [!TIP]
 >
-> **🤝 Interested in using or extending SLAMS?**
+> **Considering SLAMS for a project?**
 >
-> I welcome collaboration on applications involving the biological carbon pump
-> and on model extensions addressing new scientific questions.
+> 🤝 New users and collaborators are welcome. I can help assess whether SLAMS fits your question and advise on configuration, forcing, parameterisation, model extensions, and interpretation.
 >
-> As the model developer, I can offer guidance on model structure, forcing,
-> parameterisation, configuration, and output interpretation.
->
-> 📬 **Email** Anna Rufas at Anna.RufasBlanco@earth.ox.ac.uk
+> **Contact:** Anna.RufasBlanco@earth.ox.ac.uk
 
-## Key Features
-
-- Stochastic Lagrangian particle-resolving framework
-- Super-Droplet Method ([Shima et al., 2009](https://doi.org/10.1002/qj.441)) for efficient resolution of particle interaction dynamics
-- Physically grounded particle evolution via fractal scaling and Reynolds-number-dependent settling
-- Explicit resolution of aggregation, fragmentation, and zooplankton-mediated repackaging
-- Particle fluxes and size spectra emerge diagnostically from explicit depth crossings
-- One-dimensional water-column framework scalable to global grids via independent column execution
-- Modular Fortran 90 core with Bash workflow control and MATLAB analysis tools
+- **Mechanistic rather than prescribed:** particle fluxes and size spectra emerge from resolved particle transformations and explicit depth crossings.
+- **Efficient particle interactions:** the Super-Droplet Method
+  ([Shima et al., 2009](https://doi.org/10.1002/qj.441)) represents large particle populations without tracking every physical particle.
+- **Physically grounded evolution:** fractal scaling and
+  Reynolds-number-dependent settling connect particle structure to sinking.
+- **Multiple interacting processes:** aggregation, fragmentation, microbial
+  degradation, mineral dissolution, and zooplankton-mediated repackaging are
+  represented explicitly.
+- **Scales with the research question:** use a single local column for focused
+  experiments or independent columns for ensemble and global applications.
+- **Built for extension and diagnosis:** the modular Fortran 90 core is separated
+  from workflow control and MATLAB-based input, output, and analysis tools.
 
 ## Architecture
 
