@@ -1,14 +1,13 @@
 cff-version: 1.2.0
-message: "If you use SLAMS in your research, please cite this software and the associated publication."
+message: "If you use SLAMS, please cite both the software release and the associated manuscript."
 
 title: "SLAMS"
 type: software
 version: 2.0.0
 date-released: 2026-09-17
-
-license-url: "https://github.com/annarufas/SLAMS/blob/main/LICENSE"
+doi: "10.5281/zenodo.22832465"
 repository-code: "https://github.com/annarufas/SLAMS"
-
+license-url: "https://github.com/annarufas/SLAMS/blob/main/LICENSE"
 authors:
   - family-names: Rufas
     given-names: Anna
@@ -27,5 +26,5 @@ preferred-citation:
       given-names: Tinna
   title: "SLAMS-2.0: a stochastic, Lagrangian particle-resolving modelling framework for investigating the biological carbon pump"
   year: 2026
-  notes: "Preprint available from the ESS Open Archive."
+  repository: "ESS Open Archive"
   url: "https://doi.org/10.22541/essoar.177316670.08373510/v2"
