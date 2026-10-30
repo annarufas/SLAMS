@@ -1,5 +1,9 @@
 cff-version: 1.2.0
+<<<<<<< Updated upstream
 message: "If you use SLAMS in your research, please cite this software and the associated publication."
+=======
+message: "If you use SLAMS, please cite both the published paper and the software release."
+>>>>>>> Stashed changes
 
 title: "SLAMS"
 type: software
@@ -25,7 +29,14 @@ preferred-citation:
       orcid: "https://orcid.org/0000-0001-9048-3234"
     - family-names: Jokulsdottir
       given-names: Tinna
-  title: "SLAMS-2.0: a stochastic, Lagrangian particle-resolving modelling framework for investigating the biological carbon pump"
+  title: "SLAMS-2.0: A stochastic, Lagrangian particle-resolving modeling framework for investigating the biological carbon pump"
   year: 2026
+<<<<<<< Updated upstream
   notes: "Preprint available from the ESS Open Archive."
   url: "https://doi.org/10.22541/essoar.177316670.08373510/v2"
+=======
+  journal: "Journal of Advances in Modeling Earth Systems"
+  volume: "18"
+  issue: "11"
+  doi: "10.1029/2026MS005869"
+>>>>>>> Stashed changes

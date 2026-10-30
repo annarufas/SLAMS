@@ -1,4 +1,5 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22832464.svg)](https://doi.org/10.5281/zenodo.22832464)
+[![Paper DOI](https://img.shields.io/badge/paper-10.1029%2F2026MS005869-blue)](https://doi.org/10.1029/2026MS005869)
+[![Software DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22832464.svg)](https://doi.org/10.5281/zenodo.22832464)
 [![Version](https://img.shields.io/badge/version-2.0.0-31506f)](https://doi.org/10.5281/zenodo.22832464)
 [![Fortran 90](https://img.shields.io/badge/core-Fortran%2090-734f96)](code/fortran/src/)
 
@@ -16,7 +17,7 @@ Unlike models that prescribe a bulk sinking flux, SLAMS follows populations of b
 [Is SLAMS for me?](#is-slams-right-for-you) ·
 [Quick start](#quick-start) ·
 [Example results](#example-results) ·
-[Preprint](https://doi.org/10.22541/essoar.177316670.08373510/v2)**
+[Paper](http://doi.org/10.1029/2026MS005869)**
 
 ## What can you investigate?
 
@@ -275,8 +276,8 @@ The figure below illustrates example SLAMS outputs, including particle size stru
 
 ![Example SLAMS results](figures/slams_example_results.png)
 
-*Example model outputs showing (A) particle size and abundance structure, (B) particle type composition, and (C) emergent global carbon transfer efficiency. See the associated
-[preprint](https://doi.org/10.22541/essoar.177316670.08373510/v2) for details.*
+*Example model outputs showing (A) particle size and abundance structure, (B) particle type composition, and (C) emergent global carbon transfer efficiency. See the published
+[paper](http://doi.org/10.1029/2026MS005869) for details.*
 
 ## Reproducibility
 
@@ -364,7 +365,7 @@ Computational resources were provided by the University of Oxford Advanced Resea
 
 ## Citation
 
-If SLAMS contributes to your research, please cite both the associated paper and the archived software release. The recommended citation is provided in [`CITATION.cff`](CITATION.cff).
+If SLAMS contributes to your research, please cite both the published paper and the archived software release. The recommended citation is provided in [`CITATION.cff`](CITATION.cff).
 
 The software may be used, modified, and redistributed for non-commercial purposes subject to the licence conditions; see [`LICENSE`](LICENSE).
 
